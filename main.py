@@ -44,7 +44,6 @@ async def create_items(request : Request, db : db_dependency, tag = Form(...), p
     db.commit()
     db.refresh(db_item)
     db.commit()
-    return RedirectResponse(url="http://127.0.0.1:5500/fastapi-postgresql/templates/index.html", status_code=303)
 
 @app.post('/attribute/{item_id}')
 async def create_attributes(request : Request, item_id : int, db : db_dependency, name = Form(...), description = Form(...)):
@@ -53,11 +52,15 @@ async def create_attributes(request : Request, item_id : int, db : db_dependency
     db.commit()
     db.refresh(db_item)
     db.commit()
-    return RedirectResponse(url="http://127.0.0.1:5500/fastapi-postgresql/templates/index.html", status_code=303)
 
 @app.get('/get_items')
 async def read_items(db : db_dependency):
     result = db.query(models.Item).all()
+    return result
+
+@app.get('/get_items/{item_id}')
+async def read_items(item_id: int, db : db_dependency):
+    result = db.query(models.Item).filter(models.Item.id == item_id).first()
     return result
 
 @app.get('/get_attributes/{item_id}')
@@ -81,4 +84,3 @@ async def update_item(item_id: int, db : db_dependency, tag = Form(...), price =
     result.description = description
     db.commit()
     db.refresh(result)
-    return RedirectResponse(url="http://127.0.0.1:5500/fastapi-postgresql/templates/index.html", status_code=303)
