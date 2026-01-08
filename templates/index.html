@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>item display</title>
+</head>
+
+<body>
+    <h1>Items and Attributes</h1>
+
+    <form id="itemform" method="post">
+        Item tag:<input type="text" name="tag" required>
+        Price:<input type="number" name="price" required>
+        Description:<input type="text" name="description">
+        <button onclick="createitem()" type="submit">Save</button>
+    </form>
+
+    <div id="items"></div>
+    <br>
+    <div id="Attributeformdiv"></div>
+    <div id="attributes"></div>
+
+
+    <script src="./script/index.js"></script>
+</body>
+
+</html>
