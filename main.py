@@ -1,3 +1,4 @@
+import re
 from fastapi import FastAPI, HTTPException, Depends, Request, Form
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, Field
@@ -12,13 +13,13 @@ app = FastAPI()
 models.Base.metadata.create_all(bind=engine)
 
 origins = [
-    "http://127.0.0.1:5500",  # your frontend origin
+    "http://127.0.0.1:5500",
     "http://localhost:5500"
 ]
 
 app.add_middleware(
     CORSMiddleware, 
-    allow_origins=origins,  # or ["*"] for all origins (less secure)
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -37,7 +38,17 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.post('/items/')
-async def create_items(request : Request, db : db_dependency, tag = Form(...), price = Form(...), description = Form(...)):
+async def create_items(request : Request, db : db_dependency, tag = Form(...), price = Form(...), description = Form(None)):
+    if ( not tag ) or ( not price ) :
+        raise HTTPException(status_code=400, detail="Tag and Price are required fields.")
+    if not re.fullmatch(r'[a-zA-Z0-9_-]+', tag):
+        raise HTTPException(status_code=400, detail="Tag contains invalid characters.")
+    if ( price <= 0 ):
+        raise HTTPException(status_code=400, detail="Price must be a positive value.")
+    if ( len(tag) > 50 ):
+        raise HTTPException(status_code=400, detail="Tag length must not exceed 50 characters.")
+    if description and ( len(description) < 3 or len(description) > 200 ):
+        raise HTTPException(status_code=400, detail="Description length must be between 3 and 200 characters.")
     db_item = models.Item(tag = tag, price = price, description = description)
     db.add(db_item)
     db.commit()
@@ -46,6 +57,12 @@ async def create_items(request : Request, db : db_dependency, tag = Form(...), p
 
 @app.post('/attribute/{item_id}')
 async def create_attributes(request : Request, item_id : int, db : db_dependency, name = Form(...), description = Form(...)):
+    if ( not name ) :
+        raise HTTPException(status_code=400, detail="Name is required.")
+    if ( len(name) > 50 ):
+        raise HTTPException(status_code=400, detail="Name length must not exceed 50 characters.")
+    if len(description) < 3 or len(description) > 200 :
+        raise HTTPException(status_code=400, detail="Description length must be between 3 and 200 characters.")
     db_item = models.Attributes(name = name, item_id = item_id, description = description)
     db.add(db_item)
     db.commit()
@@ -75,6 +92,16 @@ async def delete_item(item_id: int, db : db_dependency):
 
 @app.put('/items/{item_id}/update')
 async def update_item(item_id: int, db : db_dependency, tag = Form(...), price = Form(...), description = Form(...)):
+    if ( not tag ) or ( not price ) :
+        raise HTTPException(status_code=400, detail="Tag and Price are required fields.")
+    if not re.fullmatch(r'[a-zA-Z0-9_-]+', tag):
+        raise HTTPException(status_code=400, detail="Tag contains invalid characters.")
+    if ( price <= 0 ):
+        raise HTTPException(status_code=400, detail="Price must be a positive value.")
+    if ( len(tag) > 50 ):
+        raise HTTPException(status_code=400, detail="Tag length must not exceed 50 characters.")
+    if description and ( len(description) < 3 or len(description) > 200 ):
+        raise HTTPException(status_code=400, detail="Description length must be between 3 and 200 characters.")
     result = db.query(models.Item).filter(models.Item.id == item_id).first()
     if not result:
         raise HTTPException(status_code=404,detail='Item not found')
