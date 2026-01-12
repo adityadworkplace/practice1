@@ -1,4 +1,4 @@
-window.addEventListener("load", getitem());
+window.onload = getitem();
 
 document.getElementById("closeModal").addEventListener("click", () => {
     document.getElementById("updateModal").style.display = "none";
@@ -54,7 +54,7 @@ async function getitem() {
         return;
     }
 
-    let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th>price</th><th>description</th><th></th><th></th></tr>"
+    let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th>price</th><th>description</th><th></th><th></th><th></th></tr>"
     data.forEach(item => {
         table += `<tr>
         <td>${item.tag}</td>
@@ -215,3 +215,65 @@ form1.addEventListener("submit", async (e) => {
     stoploader();
     getitem();
 })
+
+document.getElementById("searchbar").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const q = e.target.querySelector("input[name='search']").value.trim();
+    loader();
+    const response = await fetch(`http://127.0.0.1:8000/searchitems/?q=${encodeURIComponent(q)}`, {
+        method: "GET"
+    });
+    const data = await response.json();
+
+    const container = document.getElementById("items");
+    container.innerHTML = "";
+    if (data.length === 0) {
+        container.innerHTML = "<p>No data found</p>";
+        return;
+    }
+    let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th>price</th><th>description</th><th></th><th></th><th></th></tr>"
+    data.forEach(item => {
+        table += `<tr>
+        <td>${item.tag}</td>
+        <td>${item.price}</td>
+        <td>${item.description || ""}</td>
+        <td><button type="button" onclick="getattr(${item.id}); selectid(${item.id}, this)">Select</button></td>
+        <td><button type="button" onclick="updateitem(${item.id})">Update</button></td>
+        <td><button type="button" onclick="deleteitem(${item.id})">Delete</button></td>
+        </tr>`;
+    });
+    table += "</table>"
+    container.innerHTML = table;
+    stoploader();
+})
+
+async function sort() {
+    loader();
+    const response = await fetch("http://127.0.0.1:8000/get_sorteditems", {
+        method: "GET"
+    });
+    const data = await response.json();
+    const container = document.getElementById("items");
+    container.innerHTML = "";
+
+    if (data.length === 0) {
+        container.innerHTML = "<p>No data found</p>";
+        stoploader();
+        return;
+    }
+
+    let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th>price</th><th>description</th><th></th><th></th><th></th></tr>"
+    data.forEach(item => {
+        table += `<tr>
+        <td>${item.tag}</td>
+        <td>${item.price}</td>
+        <td>${item.description || ""}</td>
+        <td><button type="button" onclick="getattr(${item.id}); selectid(${item.id}, this)">Select</button></td>
+        <td><button type="button" onclick="updateitem(${item.id})">Update</button></td>
+        <td><button type="button" onclick="deleteitem(${item.id})">Delete</button></td>
+        </tr>`;
+    });
+    table += "</table>"
+    container.innerHTML = table;
+    stoploader();
+}
