@@ -11,7 +11,9 @@ function loader() {
 
 function stoploader() {
     const loader = document.getElementById("loader");
-    if (loader) { loader.style.display = 'none'; }
+    if (loader) { 
+        setTimeout(() => { loader.style.display = 'none'; }, 1000) 
+    }
 }
 
 async function getattr(id) {
