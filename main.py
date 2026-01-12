@@ -110,3 +110,16 @@ async def update_item(item_id: int, db : db_dependency, tag = Form(...), price =
     result.description = description
     db.commit()
     db.refresh(result)
+
+@app.get('/searchitems/')
+async def searchitems( db : db_dependency, q: Optional[str] = None):
+    if q:
+        result = db.query(models.Item).filter((models.Item.tag.contains(q)) | (models.Item.description.contains(q))).all()
+    else:
+        result = db.query(models.Item).all()
+    return result
+
+@app.get('/get_sorteditems')
+async def get_sorteditems(db : db_dependency):
+    result = db.query(models.Item).order_by(models.Item.tag.asc()).all()
+    return result
