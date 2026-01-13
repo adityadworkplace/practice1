@@ -25,7 +25,7 @@
         <div>
             <form id="searchbar" method="get">
                 Search Item: <input type="text" name="search">
-                <button type="submit">Search</button>
+                <button type="submit" id="searchbutton">Search</button>
             </form>
             <button onclick="sort()"><img src="./img/arrow.png" style="width: 15px;"></button>
         </div>
@@ -36,22 +36,22 @@
         <div id="loader"
             style="display:none; position:fixed; top:10px; right:10px; background:#ddd; padding:10px; border-radius:5px;">
             Loading...</div>
-
-        <div id="updateModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; 
-    background: rgba(0,0,0,0.5); justify-content:center; align-items:center;">
-            <div style="background:white; padding:20px; border-radius:8px; min-width:300px; position:relative;">
-                <span id="closeModal"
-                    style="position:absolute; top:5px; right:10px; cursor:pointer; font-size: 100px; font-weight: bold;">&times;</span>
+        <div id="updateModal">
+            <div id="model-content">
+                <span id="closeModal">&times;</span>
                 <h3>Update Item</h3>
                 <form id="updateitemform" method="post">
-                    <Label>Item tag:</Label><input type="text" name="tag" required>
-                    <Label>Price:</Label><input type="number" name="price" required>
-                    <Label>Description:</Label><input type="text" name="description">
+                    <Label>Item tag:</Label><br><input type="text" name="tag" required>
+                    <span id="updateitemformtag"></span>
+                    <br>
+                    <Label>Price:</Label><br><input type="number" name="price" required>
+                    <span id="updateitemformprice"></span>
+                    <br>
+                    <Label>Description:</Label><br><input type="text" name="description">
+                    <span id="updateitemformdescription"></span>
+                    <br>
                     <button type="submit">Save</button>
                 </form>
-                <span id="updateitemformtag"></span>
-                <span id="updateitemformprice"></span>
-                <span id="updateitemformdescription"></span>
             </div>
         </div>
     </div>

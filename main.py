@@ -38,17 +38,17 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 
 @app.post('/items/')
-async def create_items(request : Request, db : db_dependency, tag = Form(...), price = Form(...), description = Form(None)):
+async def create_items(request : Request, db : db_dependency, tag = Form(...), price = Form(...), description : Optional[str] = Form(None)):
     if ( not tag ) or ( not price ) :
         raise HTTPException(status_code=400, detail="Tag and Price are required fields.")
     if not re.fullmatch(r'[a-zA-Z0-9_-]+', tag):
         raise HTTPException(status_code=400, detail="Tag contains invalid characters.")
-    if ( price <= 0 ):
+    if ( price < '0' ):
         raise HTTPException(status_code=400, detail="Price must be a positive value.")
     if ( len(tag) > 50 ):
         raise HTTPException(status_code=400, detail="Tag length must not exceed 50 characters.")
     if description and ( len(description) < 3 or len(description) > 200 ):
-        raise HTTPException(status_code=400, detail="Description length must be between 3 and 200 characters.")
+        raise HTTPException(status_code=400, detail="Description must be 3–200 characters.")
     db_item = models.Item(tag = tag, price = price, description = description)
     db.add(db_item)
     db.commit()
@@ -91,12 +91,12 @@ async def delete_item(item_id: int, db : db_dependency):
     db.commit()
 
 @app.put('/items/{item_id}/update')
-async def update_item(item_id: int, db : db_dependency, tag = Form(...), price = Form(...), description = Form(...)):
+async def update_item(item_id: int, db : db_dependency, tag = Form(...), price = Form(...), description : Optional[str] = Form(None)):
     if ( not tag ) or ( not price ) :
         raise HTTPException(status_code=400, detail="Tag and Price are required fields.")
     if not re.fullmatch(r'[a-zA-Z0-9_-]+', tag):
         raise HTTPException(status_code=400, detail="Tag contains invalid characters.")
-    if ( price <= 0 ):
+    if ( price < '0' ):
         raise HTTPException(status_code=400, detail="Price must be a positive value.")
     if ( len(tag) > 50 ):
         raise HTTPException(status_code=400, detail="Tag length must not exceed 50 characters.")

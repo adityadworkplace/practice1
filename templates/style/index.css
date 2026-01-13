@@ -51,3 +51,48 @@ textbox, input[type="text"], input[type="number"] {
 span {
     color: red;
 }
+
+#updateModal {
+    display: flex;
+    position: fixed;
+    top: 27%;
+    left: 35%;
+    width: 27%;
+    height: 53%;
+    background:black;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+}
+
+#model-content {
+    background: whitesmoke;
+    color: black;
+    margin-top: 30px;
+    margin-left: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    width: 70%;
+    position: relative;
+    padding: auto;
+    border-radius: 10px;
+} 
+
+#model-content button {
+    background-color: rgb(46, 42, 42);
+}
+
+#closeModal {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 50px;
+    font-weight: bold;
+    color: black;
+}
+
+searchbutton:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}

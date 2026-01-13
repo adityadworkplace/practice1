@@ -1,5 +1,8 @@
 window.onload = getitem();
 
+const modal = document.getElementById("updateModal");
+modal.style.display = "none";
+
 document.getElementById("closeModal").addEventListener("click", () => {
     document.getElementById("updateModal").style.display = "none";
 });
@@ -11,8 +14,8 @@ function loader() {
 
 function stoploader() {
     const loader = document.getElementById("loader");
-    if (loader) { 
-        setTimeout(() => { loader.style.display = 'none'; }, 1000) 
+    if (loader) {
+        setTimeout(() => { loader.style.display = 'none'; }, 1000)
     }
 }
 
@@ -147,21 +150,26 @@ async function updateitem(id) {
         span2.innerText = "";
         if (form1.tag.value.trim() === "") {
             span.innerText = "Tag is required";
+            stoploader();
             return;
         } else if (!/^[a-zA-Z0-9_-]+$/.test(form1.tag.value.trim()) || form1.tag.value.trim().length > 50) {
             span.innerText = "Tag can only contain alphanumeric characters, underscores, and hyphens, and must be less than 50 characters long";
+            stoploader();
             return;
         }
         if (form1.price.value.trim() === "" || isNaN(Number(form1.price.value))) {
             span1.innerText = "Price is required";
+            stoploader();
             return;
         }
         if (Number(form1.price.value) < 0) {
             span1.innerText = "Price cannot be negative";
+            stoploader();
             return;
         }
         if (form1.description.value.trim().length > 0 && form1.description.value.trim().length < 3) {
             span2.innerText = "Description should be at least 3 characters long if provided";
+            stoploader();
             return;
         }
         await fetch(`http://127.0.0.1:8000/items/${id}/update`, {
@@ -222,15 +230,17 @@ document.getElementById("searchbar").addEventListener("submit", async (e) => {
     e.preventDefault();
     const q = e.target.querySelector("input[name='search']").value.trim();
     loader();
+    document.getElementById("searchbutton").disabled = true;
     const response = await fetch(`http://127.0.0.1:8000/searchitems/?q=${encodeURIComponent(q)}`, {
         method: "GET"
     });
     const data = await response.json();
-
+    setTimeout(() => { document.getElementById("searchbutton").disabled = false; }, 2000);
     const container = document.getElementById("items");
     container.innerHTML = "";
     if (data.length === 0) {
         container.innerHTML = "<p>No data found</p>";
+        stoploader();
         return;
     }
     let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th>price</th><th>description</th><th></th><th></th><th></th></tr>"
