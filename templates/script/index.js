@@ -9,12 +9,16 @@ document.getElementById("closeModal").addEventListener("click", () => {
 
 function loader() {
     const loader = document.getElementById("loader");
-    if (loader) { loader.style.display = 'block'; }
+    if (loader) {
+        document.getElementById("searchbutton").disabled = true;
+        loader.style.display = 'block';
+    }
 }
 
 function stoploader() {
     const loader = document.getElementById("loader");
     if (loader) {
+        setTimeout(() => { document.getElementById("searchbutton").disabled = false; }, 2000);
         setTimeout(() => { loader.style.display = 'none'; }, 1000)
     }
 }
@@ -123,68 +127,81 @@ async function deleteitem(id) {
     getitem();
 }
 
-async function updateitem(id) {
+let currentUpdateItemId = null;
+const updateForm = document.getElementById("updateitemform");
 
+async function updateitem(id) {
     loader();
+
     const response = await fetch(`http://127.0.0.1:8000/get_items/${id}`);
     const data = await response.json();
+
     stoploader();
 
-    const modal = document.getElementById("updateModal");
-    modal.style.display = "block";
+    currentUpdateItemId = id;
+    document.getElementById("updateModal").style.display = "block";
 
-    const form1 = document.getElementById("updateitemform");
-    form1.tag.value = data.tag;
-    form1.price.value = data.price;
-    form1.description.value = data.description || "";
-
-    form1.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        loader();
-        const formData = new FormData(form1);
-        const span = document.getElementById("updateitemformtag");
-        const span1 = document.getElementById("updateitemformprice");
-        const span2 = document.getElementById("updateitemformdescription");
-        span.innerText = "";
-        span1.innerText = "";
-        span2.innerText = "";
-        if (form1.tag.value.trim() === "") {
-            span.innerText = "Tag is required";
-            stoploader();
-            return;
-        } else if (!/^[a-zA-Z0-9_-]+$/.test(form1.tag.value.trim()) || form1.tag.value.trim().length > 50) {
-            span.innerText = "Tag can only contain alphanumeric characters, underscores, and hyphens, and must be less than 50 characters long";
-            stoploader();
-            return;
-        }
-        if (form1.price.value.trim() === "" || isNaN(Number(form1.price.value))) {
-            span1.innerText = "Price is required";
-            stoploader();
-            return;
-        }
-        if (Number(form1.price.value) < 0) {
-            span1.innerText = "Price cannot be negative";
-            stoploader();
-            return;
-        }
-        if (form1.description.value.trim().length > 0 && form1.description.value.trim().length < 3) {
-            span2.innerText = "Description should be at least 3 characters long if provided";
-            stoploader();
-            return;
-        }
-        await fetch(`http://127.0.0.1:8000/items/${id}/update`, {
-            method: "PUT",
-            body: formData
-        });
-
-        stoploader();
-
-        const modal = document.getElementById("updateModal");
-        modal.style.display = "none";
-
-        getitem();
-    })
+    updateForm.tag.value = data.tag;
+    updateForm.price.value = data.price;
+    updateForm.description.value = data.description || "";
 }
+
+updateForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUpdateItemId) return;
+
+    const span = document.getElementById("updateitemformtag");
+    const span1 = document.getElementById("updateitemformprice");
+    const span2 = document.getElementById("updateitemformdescription");
+
+    span.innerText = "";
+    span1.innerText = "";
+    span2.innerText = "";
+
+    if (updateForm.tag.value.trim() === "") {
+        span.innerText = "Tag is required";
+        return;
+    }
+
+    if (!/^[a-zA-Z0-9_-]+$/.test(updateForm.tag.value.trim()) ||
+        updateForm.tag.value.trim().length > 50) {
+        span.innerText = "Invalid tag";
+        return;
+    }
+
+    if (updateForm.price.value.trim() === "" ||
+        isNaN(updateForm.price.value)) {
+        span1.innerText = "Price is required";
+        return;
+    }
+
+    if (Number(updateForm.price.value) < 0) {
+        span1.innerText = "Price cannot be negative";
+        return;
+    }
+
+    if (updateForm.description.value.trim().length > 0 &&
+        updateForm.description.value.trim().length < 3) {
+        span2.innerText = "Description too short";
+        return;
+    }
+
+    loader();
+
+    await fetch(
+        `http://127.0.0.1:8000/items/${currentUpdateItemId}/update`,
+        {
+            method: "PUT",
+            body: new FormData(updateForm)
+        }
+    );
+
+    stoploader();
+    document.getElementById("updateModal").style.display = "none";
+    currentUpdateItemId = null;
+    getitem();
+});
+
 
 const form1 = document.getElementById("itemform");
 
@@ -230,12 +247,10 @@ document.getElementById("searchbar").addEventListener("submit", async (e) => {
     e.preventDefault();
     const q = e.target.querySelector("input[name='search']").value.trim();
     loader();
-    document.getElementById("searchbutton").disabled = true;
     const response = await fetch(`http://127.0.0.1:8000/searchitems/?q=${encodeURIComponent(q)}`, {
         method: "GET"
     });
     const data = await response.json();
-    setTimeout(() => { document.getElementById("searchbutton").disabled = false; }, 2000);
     const container = document.getElementById("items");
     container.innerHTML = "";
     if (data.length === 0) {

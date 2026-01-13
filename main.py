@@ -91,12 +91,10 @@ async def delete_item(item_id: int, db : db_dependency):
     db.commit()
 
 @app.put('/items/{item_id}/update')
-async def update_item(item_id: int, db : db_dependency, tag = Form(...), price = Form(...), description : Optional[str] = Form(None)):
-    if ( not tag ) or ( not price ) :
-        raise HTTPException(status_code=400, detail="Tag and Price are required fields.")
+async def update_item(item_id: int, db : db_dependency, tag: str = Form(...), price: float = Form(...), description : Optional[str] = Form(None)):
     if not re.fullmatch(r'[a-zA-Z0-9_-]+', tag):
         raise HTTPException(status_code=400, detail="Tag contains invalid characters.")
-    if ( price < '0' ):
+    if ( price < 0 ):
         raise HTTPException(status_code=400, detail="Price must be a positive value.")
     if ( len(tag) > 50 ):
         raise HTTPException(status_code=400, detail="Tag length must not exceed 50 characters.")
@@ -104,7 +102,7 @@ async def update_item(item_id: int, db : db_dependency, tag = Form(...), price =
         raise HTTPException(status_code=400, detail="Description length must be between 3 and 200 characters.")
     result = db.query(models.Item).filter(models.Item.id == item_id).first()
     if not result:
-        raise HTTPException(status_code=404,detail='Item not found')
+        raise HTTPException(status_code=404, detail="Item not found.")
     result.tag = tag
     result.price = price
     result.description = description

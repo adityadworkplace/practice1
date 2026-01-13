@@ -35,6 +35,12 @@ th, td {
     border-bottom: 1px solid #ddd;
 }
 
+
+#searchbutton:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+}
+
 button {
     background-color: rgb(56, 32, 0);
     color: white;
@@ -90,9 +96,4 @@ span {
     font-size: 50px;
     font-weight: bold;
     color: black;
-}
-
-searchbutton:disabled {
-    background-color: grey;
-    cursor: not-allowed;
 }
