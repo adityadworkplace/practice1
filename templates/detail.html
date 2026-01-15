@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail</title>
+</head>
+
+<body>
+    <h1>Item Detail</h1>
+    <nav>
+        <a href="./index.html">Item Display</a>
+        <a href="./form.html">Item form</a>
+    </nav>
+    <div>
+        <div id="item-detail"></div>
+        <div id="updateModal">
+            <div id="model-content">
+                <span id="closeModal">&times;</span>
+                <h3>Update Item</h3>
+                <form id="updateitemform" method="post">
+                    <Label>Item tag:</Label><br><input type="text" name="tag" required>
+                    <span id="updateitemformtag"></span>
+                    <br>
+                    <Label>Price:</Label><br><input type="number" name="price" required>
+                    <span id="updateitemformprice"></span>
+                    <br>
+                    <Label>Description:</Label><br><input type="text" name="description">
+                    <span id="updateitemformdescription"></span>
+                    <br>
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+            <div id="Attributeformdiv"></div>
+            <div id="attributes"></div>
+        </div>
+        <div id="loader"
+            style="display:none; position:fixed; top:10px; right:10px; background:#ddd; padding:10px; border-radius:5px;">
+            Loading...</div>
+    </div>
+    <script src="./script/detail.js"></script>
+</body>
+
+</html>
