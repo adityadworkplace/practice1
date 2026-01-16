@@ -29,7 +29,8 @@ td {
     background-color: rgb(222, 193, 154);
 }
 
-th, td {
+th,
+td {
     padding: 10px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -50,7 +51,13 @@ button {
     cursor: pointer;
 }
 
-textbox, input[type="text"], input[type="number"] {
+button:hover {
+    background-color: rgb(85, 49, 15);
+}
+
+textbox,
+input[type="text"],
+input[type="number"] {
     background-color: cornsilk;
 }
 
@@ -65,7 +72,7 @@ span {
     left: 35%;
     width: 27%;
     height: 53%;
-    background:black;
+    background: black;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
@@ -82,7 +89,7 @@ span {
     position: relative;
     padding: auto;
     border-radius: 10px;
-} 
+}
 
 #model-content button {
     background-color: rgb(46, 42, 42);
@@ -96,4 +103,43 @@ span {
     font-size: 50px;
     font-weight: bold;
     color: black;
+}
+
+#items {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.item-card {
+    background-color: rgb(231, 149, 42);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    width: 150px;
+    text-align: center;
+}
+
+.item-card:hover {
+    background-color: rgb(230, 202, 166);
+}
+
+nav {
+    margin-bottom: 10px;
+    gap: 10px;
+    display: flex;
+    justify-content: center;
+    background-color: rgb(231, 149, 42);
+    height: 30px;
+    padding: 10px;
+}
+
+.formdiv {
+    background-color: burlywood;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }

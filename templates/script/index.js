@@ -30,15 +30,15 @@ async function getitem() {
         return;
     }
 
-    let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th></th></tr>"
+    let itemcard = ""
     data.forEach(item => {
-        table += `<tr>
-        <td>${item.tag}</td>
-        <td><button type="button" onclick="godetails(${item.id})">Select</button></td>
-        </tr>`;
+        itemcard += `<div class="item-card">
+        <p>${item.tag}</p>
+        <button type="button" onclick="godetails(${item.id})">Select</button>
+        </div>`;
     });
-    table += "</table>"
-    container.innerHTML = table;
+
+    container.innerHTML = itemcard;
     stoploader();
 }
 
@@ -57,15 +57,14 @@ document.getElementById("searchbar").addEventListener("submit", async (e) => {
         stoploader();
         return;
     }
-    let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th></th></tr>"
+    let itemcard = ""
     data.forEach(item => {
-        table += `<tr>
-        <td>${item.tag}</td>
-        <td><button type="button" onclick="godetails(${item.id})">Select</button></td>
-        </tr>`;
+        itemcard += `<div class="item-card">
+        <p>${item.tag}</p>
+        <button type="button" onclick="godetails(${item.id})">Select</button>
+        </div>`;
     });
-    table += "</table>"
-    container.innerHTML = table;
+    container.innerHTML = itemcard;
     stoploader();
 })
 
@@ -84,15 +83,14 @@ async function sort() {
         return;
     }
 
-    let table = "<table border='1' cellpadding='5' cellspacing='0'><tr><th>tag</th><th></th></tr>"
+    let itemcard = ""
     data.forEach(item => {
-        table += `<tr>
-        <td>${item.tag}</td>
-        <td><button type="button" onclick="godetails(${item.id})">Select</button></td>
-        </tr>`;
+        itemcard += `<div class="item-card">
+        <p>${item.tag}</p>
+        <button type="button" onclick="godetails(${item.id})">Select</button>
+        </div>`;
     });
-    table += "</table>"
-    container.innerHTML = table;
+    container.innerHTML = itemcard;
     stoploader();
 }
 
