@@ -1,6 +1,8 @@
+let id1 = null;
 window.onload = function () {
     const p = new URLSearchParams(window.location.search);
     const id = p.get("id");
+    id1 = id;
     if (id) {
         getitem(Number(id));
     } else {
@@ -53,39 +55,6 @@ async function getattr(id) {
     table += "</table>"
     container.innerHTML = table;
     stoploader();
-
-    const container1 = document.getElementById("Attributeformdiv");
-    container1.innerHTML = '<form id="Attributeform" method="post">Attribute name:<input type="text" name="name" required>Description<input type="text" name="description"><button type="submit">Add</button></form><span id="Attributeformname"></span><span id="Attributeformdescription"></span>';
-
-    const form = document.getElementById("Attributeform");
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form);
-        const span = document.getElementById("Attributeformname");
-        const span2 = document.getElementById("Attributeformdescription");
-        span.innerText = "";
-        span2.innerText = "";
-        if (form.name.value.trim() === "") {
-            span.innerText = "Name is required";
-            return;
-        } else if (!/^[a-zA-Z0-9_-]+$/.test(form.name.value.trim()) || form.name.value.trim().length > 50) {
-            span.innerText = "Name can only contain alphanumeric characters, underscores, and hyphens, and must be less than 50 characters long";
-            return;
-        }
-        if (form.description.value.trim() === "") {
-            span2.innerText = "Description is required";
-            return;
-        }
-        loader();
-        await fetch(`http://127.0.0.1:8000/attribute/${id}`, {
-            method: "POST",
-            body: formData
-        });
-        form.reset();
-        getattr(id);
-        stoploader();
-    });
 }
 
 async function getitem(id) {
@@ -203,3 +172,34 @@ if (updateForm) {
         getitem(currentUpdateItemId);
     });
 }
+
+
+const form = document.getElementById("Attributeform");
+
+form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const span = document.getElementById("Attributeformname");
+    const span2 = document.getElementById("Attributeformdescription");
+    span.innerText = "";
+    span2.innerText = "";
+    if (form.name.value.trim() === "") {
+        span.innerText = "Name is required";
+        return;
+    } else if (!/^[a-zA-Z0-9_-]+$/.test(form.name.value.trim()) || form.name.value.trim().length > 50) {
+        span.innerText = "Name can only contain alphanumeric characters, underscores, and hyphens, and must be less than 50 characters long";
+        return;
+    }
+    if (form.description.value.trim() === "" || form.description.value.trim().length < 3) {
+        span2.innerText = "Description is required and must be at least 3 characters long";
+        return;
+    }
+    loader();
+    await fetch(`http://127.0.0.1:8000/attribute/${id1}`, {
+        method: "POST",
+        body: formData
+    });
+    form.reset();
+    getattr(id1);
+    stoploader();
+});

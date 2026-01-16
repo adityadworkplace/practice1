@@ -56,7 +56,7 @@ async def create_items(request : Request, db : db_dependency, tag = Form(...), p
     db.commit()
 
 @app.post('/attribute/{item_id}')
-async def create_attributes(request : Request, item_id : int, db : db_dependency, name = Form(...), description = Form(...)):
+async def create_attributes(item_id : int, db : db_dependency, name = Form(...), description = Form(...)):
     if ( not name ) :
         raise HTTPException(status_code=400, detail="Name is required.")
     if ( len(name) > 50 ):
@@ -67,7 +67,7 @@ async def create_attributes(request : Request, item_id : int, db : db_dependency
     db.add(db_item)
     db.commit()
     db.refresh(db_item)
-    db.commit()
+    return db_item
 
 @app.get('/get_items')
 async def read_items(db : db_dependency):
