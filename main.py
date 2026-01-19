@@ -14,7 +14,9 @@ models.Base.metadata.create_all(bind=engine)
 
 origins = [
     "http://127.0.0.1:5500",
-    "http://localhost:5500"
+    "http://localhost:5500",
+    "http://localhost:5173"
+
 ]
 
 app.add_middleware(
@@ -75,7 +77,7 @@ async def read_items(db : db_dependency):
     return result
 
 @app.get('/get_items/{item_id}')
-async def read_items(item_id: int, db : db_dependency):
+async def read_item_by_id(item_id: int, db : db_dependency):
     result = db.query(models.Item).filter(models.Item.id == item_id).first()
     return result
 
